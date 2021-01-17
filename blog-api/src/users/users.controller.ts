@@ -7,25 +7,36 @@ import {
   Body,
   Param,
   HttpStatus,
+  HttpException,
+  UsePipes,
+  Logger,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
 import { UsersDTO } from './users.dto';
+import { ValidationPipe } from 'src/shared/validation.pipe';
 
 @Controller('users')
 export class UsersController {
+  private logger = new Logger('UsersController');
   constructor(private usersService: UsersService) {}
 
   @Get()
   async showAllUsers() {
+    const data = await this.usersService.showAll();
+    if (!data) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
     return {
       statusCode: HttpStatus.OK,
-      data: await this.usersService.showAll(),
+      data: data,
     };
   }
 
   @Post()
+  @UsePipes(new ValidationPipe())
   async createUsers(@Body() data: UsersDTO) {
+    this.logger.log(JSON.stringify(data));
     return {
       statusCode: HttpStatus.OK,
       message: 'User added successfully',
@@ -35,14 +46,20 @@ export class UsersController {
 
   @Get(':id')
   async readUser(@Param('id') id: number) {
+    const data = await this.usersService.read(id);
+    if (!data) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
     return {
       statusCode: HttpStatus.OK,
-      data: await this.usersService.read(id),
+      data: data,
     };
   }
 
   @Patch(':id')
+  @UsePipes(new ValidationPipe())
   async updateUser(@Param('id') id: number, @Body() data: Partial<UsersDTO>) {
+    this.logger.log(JSON.stringify(data));
     return {
       statusCode: HttpStatus.OK,
       message: 'User update successfully',

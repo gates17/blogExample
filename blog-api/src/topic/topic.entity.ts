@@ -2,48 +2,30 @@
 import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, CreateDateColumn } from 'typeorm';
 import * as crypto from 'crypto';
 // pass the name of table inside @Entity() i.e "users", if you don't pass table name it will create "users_entity" table by default
-@Entity('users')
-export class UsersEntity {
+@Entity('topic')
+export class TopicEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({
     length: 45,
   })
-  username: string;
+  name: string;
   
-  @BeforeInsert()
-  hashPassword() {
-    this.password = crypto.createHmac('sha256', this.password).digest('hex');
-  }
-
-  @Column({
-    nullable: false,
-    length: 45,
-  })
-  password: string;
-
-  @Column({
-    nullable: false,
-    length: 45,
-  })
-  email: string;
-
-  @Column()
-  firstname: string;
-
-  @Column()
-  lastname: string;
-
   @CreateDateColumn({
     nullable: false,
   })
   date_created: Date;
 
+  @CreateDateColumn({
+    nullable: true,
+  })
+  date_updated: Date;
+
   @Column({
     default: true,
   })
-  active: boolean;
+  status: boolean;
   
  
 }
