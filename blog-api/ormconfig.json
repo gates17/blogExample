@@ -1,0 +1,10 @@
+{
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "username": "gates",
+    "password": "bragap017",
+    "database": "blogdb",
+    "entities": ["dist/**/*.entity{.ts,.js}"],
+    "synchronize": true
+}
